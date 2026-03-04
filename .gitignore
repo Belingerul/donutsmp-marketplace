@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+.env
+.env.*
+*.log
+/tmp/
+data/
+dev.db
+prisma/migrations/

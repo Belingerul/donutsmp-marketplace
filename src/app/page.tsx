@@ -127,17 +127,18 @@ export default function Home() {
   return (
     <main className="min-h-dvh bg-[#05060a] text-zinc-100 flex items-stretch sm:items-center">
       <div className="mx-auto w-full max-w-4xl lg:max-w-6xl 2xl:max-w-7xl px-2 sm:px-4 py-3 sm:py-6">
-        <div className="relative overflow-hidden rounded-[28px] border border-zinc-800 bg-gradient-to-b from-zinc-950/80 to-black/40 p-4 sm:p-6 lg:p-8 min-h-[calc(100dvh-1.5rem)] sm:min-h-0 lg:min-h-[calc(100vh-3rem)]">
+        <div className="relative overflow-hidden rounded-[28px] border border-zinc-800 bg-gradient-to-b from-zinc-950/80 to-black/40 p-4 sm:p-6 lg:p-8 min-h-[calc(100dvh-1.5rem)] sm:min-h-0 lg:min-h-[calc(100vh-3rem)] flex flex-col">
           <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-fuchsia-600/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-cyan-500/15 blur-3xl" />
           <SiteHeader />
 
 
-          <div className="mt-8 grid gap-3 lg:grid-cols-2 lg:items-start">
+          <div className="mt-8 flex-1 flex flex-col justify-center">
+            <div className="grid gap-4 lg:gap-6 lg:grid-cols-2 lg:items-start">
             <label className="grid gap-1">
-              <span className="text-sm font-semibold text-zinc-200">Your payout wallet</span>
+              <span className="text-sm lg:text-base font-semibold text-zinc-200">Your payout wallet</span>
               <input
-                className="h-14 rounded-2xl border border-zinc-800 bg-black/40 px-4 font-mono text-sm sm:text-base"
+                className="h-14 lg:h-16 rounded-2xl border border-zinc-800 bg-black/40 px-4 font-mono text-sm sm:text-base lg:text-lg"
                 value={payoutAddr}
                 onChange={(e) => setPayoutAddr(e.target.value)}
                 placeholder={payoutChain === "solana" ? "Solana address" : "0x... Ethereum address"}
@@ -146,9 +147,9 @@ export default function Home() {
 
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="grid gap-1">
-                <span className="text-sm font-semibold text-zinc-200">Chain</span>
+                <span className="text-sm lg:text-base font-semibold text-zinc-200">Chain</span>
                 <select
-                  className="h-14 rounded-2xl border border-zinc-800 bg-black/40 px-4 text-base"
+                  className="h-14 lg:h-16 rounded-2xl border border-zinc-800 bg-black/40 px-4 text-base lg:text-lg"
                   value={payoutChain}
                   onChange={(e) => setPayoutChain(e.target.value === "ethereum" ? "ethereum" : "solana")}
                 >
@@ -158,11 +159,11 @@ export default function Home() {
               </label>
 
               <label className="grid gap-1">
-                <span className="text-sm font-semibold text-zinc-200">Amount (M) — min {MIN_M}</span>
+                <span className="text-sm lg:text-base font-semibold text-zinc-200">Amount (M) — min {MIN_M}</span>
                 <input
                   type="number"
                   inputMode="numeric"
-                  className="h-14 rounded-2xl border border-zinc-800 bg-black/40 px-4 text-base"
+                  className="h-14 lg:h-16 rounded-2xl border border-zinc-800 bg-black/40 px-4 text-base lg:text-lg"
                   value={amountM}
                   step={50}
                   min={0}
@@ -181,23 +182,23 @@ export default function Home() {
               </label>
             </div>
 
-            <div className="rounded-2xl border border-zinc-800 bg-black/35 p-4 text-base text-zinc-200">
+            <div className="rounded-2xl border border-zinc-800 bg-black/35 p-4 lg:p-6 text-base lg:text-lg text-zinc-200">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-zinc-400">Rate:</span>
                 <span className="font-semibold text-zinc-100">250M = $5</span>
                 <span className="text-zinc-600">•</span>
                 <span className="text-zinc-400">You’ll receive:</span>
-                <span className="font-bold text-zinc-100 text-lg">
+                <span className="font-bold text-zinc-100 text-lg lg:text-2xl">
                   ${(((typeof amountM === "number" ? amountM : 0) / 250) * 5).toFixed(2)}
                 </span>
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-3 lg:gap-4">
               <button
                 onClick={submit}
                 disabled={status.kind === "sending" || !!chatUrl || !authed}
-                className="h-14 rounded-2xl bg-gradient-to-r from-fuchsia-600 to-cyan-500 px-8 text-base font-semibold shadow-[0_10px_30px_rgba(168,85,247,0.18)] disabled:opacity-60"
+                className="h-14 lg:h-16 rounded-2xl bg-gradient-to-r from-fuchsia-600 to-cyan-500 px-8 text-base lg:text-lg font-semibold shadow-[0_10px_30px_rgba(168,85,247,0.18)] disabled:opacity-60"
               >
                 {!!chatUrl
                   ? "Offer active"
@@ -215,7 +216,7 @@ export default function Home() {
                   if (!ok) e.preventDefault();
                 }}
                 className={[
-                  "h-14 rounded-2xl border border-zinc-800 px-6 text-base font-semibold inline-flex items-center justify-center transition",
+                  "h-14 lg:h-16 rounded-2xl border border-zinc-800 px-6 text-base lg:text-lg font-semibold inline-flex items-center justify-center transition",
                   (status.kind === "ok" && status.chatUrl) || chatUrl
                     ? "bg-gradient-to-r from-cyan-500/25 to-fuchsia-600/25 text-zinc-100 shadow-[0_10px_30px_rgba(34,211,238,0.12)]"
                     : "bg-black/25 text-zinc-500 opacity-70",
@@ -238,6 +239,7 @@ export default function Home() {
                 {status.msg}
               </div>
             ) : null}
+            </div>
           </div>
         </div>
       </div>

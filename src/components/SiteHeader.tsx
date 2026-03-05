@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 type Me = { uid: string; role: "seller" | "admin"; handle: string };
 
 export default function SiteHeader({
-  title = "DonutSMP Marketplace",
-  subtitle = "Make money playing — instant payment",
+  title = "DonutSMP Sell Market",
+  subtitle = "Sell your items — instant payment",
 }: {
   title?: string;
   subtitle?: string;

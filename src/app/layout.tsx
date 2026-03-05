@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DonutSMP Marketplace",
-  description: "DonutSMP sell market — crypto payouts.",
+  title: "DonutSMP Sell Market",
+  description: "Sell market intake — sellers submit offers and get paid.",
 };
 
 export default function RootLayout({

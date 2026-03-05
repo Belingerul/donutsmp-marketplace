@@ -102,7 +102,7 @@ export async function POST(req: Request) {
     },
   });
 
-  await tgNotify(
+  const msgId = await tgNotify(
     `🧾 New offer\n` +
       `Seller: @${sess.handle}\n` +
       `Amount: ${amountM}M\n` +
@@ -110,6 +110,10 @@ export async function POST(req: Request) {
       `Wallet: ${v.payoutAddr}\n` +
       `Offer ID: ${offer.id}`
   );
+
+  if (msgId) {
+    await prisma.offer.update({ where: { id: offer.id }, data: { tgOfferMsgId: msgId } }).catch(() => null);
+  }
 
   return NextResponse.json({ ok: true, offer });
 }

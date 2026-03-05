@@ -12,6 +12,7 @@ export type OfferRow = {
   priceUsd: number;
   payoutChain: "solana" | "ethereum";
   payoutAddr: string;
+  tgOfferMsgId?: number | null;
   adminNote?: string | null;
 };
 
@@ -28,6 +29,7 @@ export async function loadOffers(): Promise<OfferRow[]> {
       priceUsd: true,
       payoutChain: true,
       payoutAddr: true,
+      tgOfferMsgId: true,
     },
   });
 
@@ -53,6 +55,7 @@ export async function getOffer(id: string): Promise<OfferRow | null> {
       priceUsd: true,
       payoutChain: true,
       payoutAddr: true,
+      tgOfferMsgId: true,
     },
   });
   if (!o) return null;
@@ -85,6 +88,7 @@ export async function updateOffer(
         priceUsd: true,
         payoutChain: true,
         payoutAddr: true,
+        tgOfferMsgId: true,
       },
     })
     .catch(() => null);

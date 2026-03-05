@@ -35,6 +35,9 @@ model Offer {
 
   sellerToken String   @unique
 
+  // Telegram bot message id for the "new offer" notification
+  tgOfferMsgId Int?
+
   messages    Message[]
   activeLink  ActiveOffer?
 

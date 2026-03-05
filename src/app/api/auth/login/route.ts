@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { sqlite } from "@/lib/drizzle";
+import { getSqlite } from "@/lib/drizzle";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/better-sqlite3";
@@ -9,7 +9,7 @@ import { setSession } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
-const db = drizzle(sqlite);
+const db = drizzle(getSqlite());
 
 const Body = z.object({
   handle: z.string().min(3).max(32),

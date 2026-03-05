@@ -133,10 +133,11 @@ export default function Home() {
           <SiteHeader />
 
 
-          <div className="mt-8 flex-1 flex flex-col justify-center">
-            <div className="mt-4 text-center text-xs text-zinc-500">
-              <a className="underline" href="/terms">Terms</a> • <a className="underline" href="/privacy">Privacy</a>
-            </div>
+          <div className="mt-4 text-center text-xs text-zinc-500">
+            <a className="underline" href="/terms">Terms</a> • <a className="underline" href="/privacy">Privacy</a>
+          </div>
+
+          <div className="mt-6 flex-1 flex flex-col justify-center">
             <div className="grid gap-4 lg:gap-6 lg:grid-cols-2 lg:items-start">
             <label className="grid gap-1">
               <span className="text-sm lg:text-base font-semibold text-zinc-200">Your payout wallet</span>

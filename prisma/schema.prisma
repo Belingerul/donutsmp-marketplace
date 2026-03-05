@@ -1,34 +1,68 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  handle       String   @unique
+  passwordHash String
+  role         String   @default("seller")
+
+  offers       Offer[]
+  activeOffer  ActiveOffer?
 }
 
 model Offer {
-  id           String   @id @default(cuid())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  // what the seller is offering
-  category     String
-  game         String?
-  itemName     String
-  amount       String
-  priceUsd     Int      // cents
+  sellerId    String
+  seller      User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
 
-  // payout
-  payoutChain  String   // "solana" | "ethereum"
-  payoutAddr   String
+  status      String   @default("submitted")
 
-  contact      String?
-  notes        String?
+  description String
+  priceUsd    Int
+  payoutChain String
+  payoutAddr  String
 
-  status       String   @default("submitted") // submitted|accepted|rejected|paid
-  adminNote    String?
-  txHash       String?
+  sellerToken String   @unique
+
+  messages    Message[]
+  activeLink  ActiveOffer?
+
+  @@index([sellerId])
+  @@index([payoutAddr])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  offerId   String
+  offer     Offer    @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  from      String
+  text      String
+
+  @@index([offerId])
+}
+
+model ActiveOffer {
+  id          String @id @default(cuid())
+
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  offerId     String @unique
+  offer       Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  sellerToken String
 }

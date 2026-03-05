@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { nanoid } from "nanoid";
-import { addOffer, findActiveOfferByPayoutAddr, type OfferRow } from "@/lib/offersStore";
 import { getSession } from "@/lib/auth";
 import { rateLimit } from "@/lib/rateLimit";
 import { isEvmAddress, isSolanaAddress } from "@/lib/validators";
+import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -56,34 +56,50 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: `Minimum is ${MIN_M}M` }, { status: 400 });
   }
 
-  // lock: one active offer per payout address (until admin deletes it)
-  const existing = await findActiveOfferByPayoutAddr(v.payoutAddr);
-  if (existing) {
+  // lock: one active offer per user (until admin deletes it)
+  const active = await prisma.activeOffer.findUnique({ where: { userId: sess.uid } });
+  if (active) {
     return NextResponse.json(
-      {
-        ok: false,
-        error: "You already have an active offer. Wait until it is deleted.",
-        offerId: existing.id,
-      },
+      { ok: false, error: "You already have an active offer. Open Chat." },
       { status: 409 }
     );
   }
 
-  const now = new Date().toISOString();
-  const sellerToken = nanoid(24);
-  const offer: OfferRow = {
-    id: nanoid(12),
-    sellerToken,
-    createdAt: now,
-    updatedAt: now,
-    status: "submitted",
-    description: `${amountM}M`,
-    priceUsd: v.priceUsd,
-    payoutChain: v.payoutChain,
-    payoutAddr: v.payoutAddr,
-    adminNote: null,
-  };
+  // lock: one active offer per payout address (basic spam protection)
+  const existing = await prisma.offer.findFirst({
+    where: { payoutAddr: v.payoutAddr, status: "submitted" },
+    select: { id: true },
+  });
+  if (existing) {
+    return NextResponse.json(
+      { ok: false, error: "This wallet already has an active offer." },
+      { status: 409 }
+    );
+  }
 
-  await addOffer(offer);
-  return NextResponse.json({ ok: true, offer: { id: offer.id, sellerToken } });
+  const sellerToken = nanoid(24);
+
+  const offer = await prisma.offer.create({
+    data: {
+      id: nanoid(12),
+      sellerId: sess.uid,
+      status: "submitted",
+      description: `${amountM}M`,
+      priceUsd: v.priceUsd,
+      payoutChain: v.payoutChain,
+      payoutAddr: v.payoutAddr,
+      sellerToken,
+    },
+    select: { id: true, sellerToken: true },
+  });
+
+  await prisma.activeOffer.create({
+    data: {
+      userId: sess.uid,
+      offerId: offer.id,
+      sellerToken: offer.sellerToken,
+    },
+  });
+
+  return NextResponse.json({ ok: true, offer });
 }

@@ -10,13 +10,13 @@ export async function GET() {
   const sess = await getSession();
   if (!sess) return NextResponse.json({ ok: true, link: null });
 
-  const link = await getActiveOffer(sess.handle);
+  const link = await getActiveOffer(sess.uid);
   if (!link) return NextResponse.json({ ok: true, link: null });
 
   // If offer was deleted, clear stale link.
   const offer = await getOffer(link.offerId);
   if (!offer) {
-    await clearActiveOffer(sess.handle);
+    await clearActiveOffer(sess.uid);
     return NextResponse.json({ ok: true, link: null });
   }
 
@@ -36,13 +36,13 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(json);
   if (!parsed.success) return NextResponse.json({ ok: false, error: "Invalid" }, { status: 400 });
 
-  await setActiveOffer(sess.handle, parsed.data);
+  await setActiveOffer(sess.uid, parsed.data);
   return NextResponse.json({ ok: true });
 }
 
 export async function DELETE() {
   const sess = await getSession();
   if (!sess) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  await clearActiveOffer(sess.handle);
+  await clearActiveOffer(sess.uid);
   return NextResponse.json({ ok: true });
 }

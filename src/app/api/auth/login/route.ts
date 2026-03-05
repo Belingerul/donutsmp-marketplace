@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { getSqlite } from "@/lib/drizzle";
-import { users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { prisma } from "@/lib/prisma";
 import { setSession } from "@/lib/auth";
 
 export const runtime = "nodejs";
-
-const db = drizzle(getSqlite());
 
 const Body = z.object({
   handle: z.string().min(3).max(32),
@@ -23,7 +18,7 @@ export async function POST(req: Request) {
     if (!parsed.success) return NextResponse.json({ ok: false, error: "Invalid" }, { status: 400 });
 
     const { handle, password } = parsed.data;
-    const u = db.select().from(users).where(eq(users.handle, handle)).get();
+    const u = await prisma.user.findUnique({ where: { handle } });
     if (!u) return NextResponse.json({ ok: false, error: "Bad credentials" }, { status: 401 });
 
     const ok = await bcrypt.compare(password, u.passwordHash);

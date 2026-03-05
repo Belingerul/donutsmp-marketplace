@@ -3,6 +3,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { setSession } from "@/lib/auth";
+import { rateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -13,6 +14,15 @@ const Body = z.object({
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("cf-connecting-ip") || req.headers.get("x-forwarded-for") || "unknown";
+    const rl = rateLimit(`login:${ip}`, { capacity: 10, refillPerSec: 0.2 }); // burst 10, ~1 per 5s
+    if (!rl.ok) {
+      return NextResponse.json(
+        { ok: false, error: "Too many attempts" },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+      );
+    }
+
     const json = await req.json().catch(() => null);
     const parsed = Body.safeParse(json);
     if (!parsed.success) return NextResponse.json({ ok: false, error: "Invalid" }, { status: 400 });

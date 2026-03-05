@@ -126,14 +126,14 @@ export default function Home() {
 
   return (
     <main className="min-h-dvh bg-[#05060a] text-zinc-100 flex items-stretch sm:items-center">
-      <div className="mx-auto w-full max-w-4xl px-2 sm:px-4 py-3 sm:py-6">
-        <div className="relative overflow-hidden rounded-[28px] border border-zinc-800 bg-gradient-to-b from-zinc-950/80 to-black/40 p-4 sm:p-6 min-h-[calc(100dvh-1.5rem)] sm:min-h-0">
+      <div className="mx-auto w-full max-w-4xl lg:max-w-6xl 2xl:max-w-7xl px-2 sm:px-4 py-3 sm:py-6">
+        <div className="relative overflow-hidden rounded-[28px] border border-zinc-800 bg-gradient-to-b from-zinc-950/80 to-black/40 p-4 sm:p-6 lg:p-8 min-h-[calc(100dvh-1.5rem)] sm:min-h-0">
           <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-fuchsia-600/20 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-cyan-500/15 blur-3xl" />
           <SiteHeader />
 
 
-          <div className="mt-8 grid gap-3">
+          <div className="mt-8 grid gap-3 lg:grid-cols-2 lg:items-start">
             <label className="grid gap-1">
               <span className="text-sm font-semibold text-zinc-200">Your payout wallet</span>
               <input

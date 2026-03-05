@@ -24,3 +24,32 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* --- Form control theming (mobile + desktop) --- */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, rgba(236, 72, 153, 0.95) 50%),
+    linear-gradient(135deg, rgba(34, 211, 238, 0.95) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 44px;
+}
+
+/* number input arrows color (limited support) */
+input[type="number"] {
+  color-scheme: dark;
+}
+
+/* Chrome/Safari spinner tweaks */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  filter: invert(1) hue-rotate(180deg) saturate(2);
+  opacity: 0.75;
+}
+

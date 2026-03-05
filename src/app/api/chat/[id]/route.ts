@@ -3,6 +3,7 @@ import { z } from "zod";
 import { nanoid } from "nanoid";
 import { getOffer } from "@/lib/offersStore";
 import { appendMessage, loadMessages, type ChatMsg } from "@/lib/messagesStore";
+import { tgNotify } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 
@@ -57,5 +58,15 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
   };
 
   await appendMessage(id, msg);
+
+  // Notify admin (avoid dumping huge messages)
+  const preview = msg.text.length > 200 ? msg.text.slice(0, 200) + "…" : msg.text;
+  await tgNotify(
+    `💬 New message (${msg.from})\n` +
+      `Offer: ${id}\n` +
+      `From: ${msg.from}\n` +
+      `Text: ${preview}`
+  );
+
   return NextResponse.json({ ok: true });
 }

@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { rateLimit } from "@/lib/rateLimit";
 import { isEvmAddress, isSolanaAddress } from "@/lib/validators";
 import { prisma } from "@/lib/prisma";
+import { tgNotify } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 
@@ -100,6 +101,15 @@ export async function POST(req: Request) {
       sellerToken: offer.sellerToken,
     },
   });
+
+  await tgNotify(
+    `🧾 New offer\n` +
+      `Seller: @${sess.handle}\n` +
+      `Amount: ${amountM}M\n` +
+      `Chain: ${v.payoutChain}\n` +
+      `Wallet: ${v.payoutAddr}\n` +
+      `Offer ID: ${offer.id}`
+  );
 
   return NextResponse.json({ ok: true, offer });
 }
